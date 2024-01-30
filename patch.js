@@ -11,10 +11,10 @@ const newKeyPair = pki.rsa.generateKeyPair(2048);
 const newCaPrivateKey = newKeyPair.privateKey;
 const newCaPubliceKey = newKeyPair.publicKey;
 
-// * Create a new CA based off Nintendo CA - G3. Just copy the values
+// * Patch Nintendo CA - G3 with our new keys
 const newCaCertificate = pki.createCertificate();
 
-newCaCertificate.publicKey = newCaPubliceKey; // * Use the new public key, otherwise Charles complains
+newCaCertificate.publicKey = newCaPubliceKey; // * Modify the public key to our user-controlled key
 newCaCertificate.serialNumber = nintendoCAG3.serialNumber;
 newCaCertificate.validity.notBefore = nintendoCAG3.validity.notBefore;
 newCaCertificate.validity.notAfter = nintendoCAG3.validity.notAfter;
