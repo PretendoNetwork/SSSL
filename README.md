@@ -6,7 +6,7 @@ On March 1, 2021 Nintendo released Wii U firmware version [5.5.5](https://wiiubr
 There are 2 bugs at play:
 
 1. Normally a CA common name does not accept a single wildcard (\*) value. They must contain a hostname, and optionally one or many wildcards for subdomains. The Wii U will accept a single \* wildcard in place of a hostname, which allows the CA to be accepted as any domain. This bug has existed since before 5.5.5, but was not useful until now.
-2. As of 5.5.5, CA's crafted in a specific way may take a newly introduced alternate path for verification. This allows for a CA's signature to not be verified correctly. Instead, the Wii U simply checks if the certificate was *issued* by a CA, but not necessarily *signed* by one. WE have no idea why this change was made, as it does not benefit Nintendo at all. It almost feels intentional.
+2. As of 5.5.5, CA's crafted in a specific way may take a newly introduced alternate path for verification. This allows for a CA's signature to not be verified correctly. Instead, the Wii U simply checks if the certificate was *issued* by a CA, but not necessarily *signed* by one. We have no idea why this change was made, as it does not benefit Nintendo at all. It almost feels intentional.
 
 ## Exploiting
 Not any CA will work. There are 2 conditions for a CA which still need to be met even for a forged CA to be accepted:
