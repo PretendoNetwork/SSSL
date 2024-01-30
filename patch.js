@@ -1,4 +1,5 @@
 const fs = require('node:fs');
+const crypto = require('node:crypto');
 const { pki, md } = require('node-forge');
 
 // * Parse Nintendo CA - G3
@@ -27,7 +28,7 @@ newCaCertificate.setExtensions([
 		// * https://github.com/digitalbazaar/forge/blob/2bb97afb5058285ef09bcf1d04d6bd6b87cffd58/tests/unit/x509.js#L324-L329
 		// * https://github.com/digitalbazaar/forge/blob/2bb97afb5058285ef09bcf1d04d6bd6b87cffd58/lib/x509.js#L2204-L2233
 		name: 'authorityKeyIdentifier',
-		keyIdentifier: nintendoCAG3.generateSubjectKeyIdentifier().getBytes(),
+		keyIdentifier:  crypto.randomBytes(16).toString('ascii'),
 		authorityCertIssuer: nintendoCAG3.issuer,
 		serialNumber: nintendoCAG3.serialNumber
 	}
