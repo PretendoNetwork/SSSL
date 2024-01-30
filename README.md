@@ -1,6 +1,6 @@
 # SSSL - Hackless SSL bypass for the Wii U
 
-On March 1, 2021 Nintendo released Wii U firmware version [5.5.5](https://wiiubrew.org/wiki/5.5.5). This update updated the Wii U's SSL verification. The exact purpose for this update is unknown, as nothing of significance was changed, and no other changes were made in this update. With the changes to SSL verification, Nintendo introduced a bug which allows for the forging of SSL certificates. These forged certificates will be seen as "Nintendo Signed" and, due to an existing bug with how the Wii U handles CA common names, will be accepted by all domains.
+On March 1, 2021 Nintendo released Wii U firmware version [5.5.5](https://wiiubrew.org/wiki/5.5.5). This update updated the Wii U's SSL verification and recompiled all RPLs (though no code changes were made). The exact purpose for this update is unknown, as nothing of significance was changed, and no other changes were made in this update. With the changes to SSL verification, Nintendo introduced a bug which allows for the forging of SSL certificates. These forged certificates will be seen as "Nintendo Signed" and, due to an existing bug with how the Wii U handles CA common names, will be accepted by all domains.
 
 ## The bugs
 There are 2 bugs at play:
