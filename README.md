@@ -9,10 +9,11 @@ There are 2 bugs at play:
 2. As of 5.5.5, CA's crafted in a specific way may take a newly introduced alternate path for verification. This allows for a CA's signature to not be verified correctly. Instead, the Wii U simply checks if the certificate was *issued* by a CA, but not necessarily *signed* by one. We have no idea why this change was made, as it does not benefit Nintendo at all. It almost feels intentional.
 
 ## Exploiting
-Not any CA will work. There are 2 conditions for a CA which still need to be met even for a forged CA to be accepted:
+Not any CA will work. There are 3 conditions for a CA which still need to be met even for a forged CA to be accepted:
 
 1. The CA needs to be one which the Wii U would already accept. The signature is not validated in this case, so modifying an existing CA works.
 2. The Wii U does not allow a Root CA in the cert chain. It will ignore any certs that have a matching subject and authority key.
+3. The title must not roll it's own SSL. WebKit titles such as the eShop, Miiverse, TVii, etc, as well as any game which uses it's own SSL library, will not work with these certificates.
 
 The easiest way to exploit this bug is to use the Nintendo CA - G3 CA, and is what this script opts to do. This can be dumped from a Wii U's SSL certificates title at `/storage_mlc/sys/title/0005001b/10054000/content/scerts/CACERT_NINTENDO_CA_G3.der`. Changing the public key to a user-controlled key and changing the authority key identifier to anything else is all that is required. The resulting user-controlled private key and patched CA can be used to bypass SSL verification without any homebrew or CFW at all.
 
