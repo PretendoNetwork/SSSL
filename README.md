@@ -22,9 +22,8 @@ This script takes in a PEM encoded copy of Nintendo CA - G3 and does the above p
 - Install [NodeJS](https://nodejs.org/)
 - `git clone git clone https://github.com/PretendoNetwork/SSSL`
 - `cd SSSL`
-- `npm i` (this only needs to be done once)
-- Place `CACERT_NINTENDO_CA_G3.pem` in the same folder as this script
-- `node patch`
+- `npm i` to install the dependencies
+- `node patch` to run the patching wizard
 
 ## Credits
 - Shutterbug for actually finding the new verification bug
