@@ -20,6 +20,13 @@ newCaCertificate.validity.notBefore = nintendoCAG3.validity.notBefore;
 newCaCertificate.validity.notAfter = nintendoCAG3.validity.notAfter;
 newCaCertificate.setIssuer(nintendoCAG3.subject.attributes);
 newCaCertificate.setSubject(nintendoCAG3.subject.attributes);
+newCaCertificate.setSubject([
+	...nintendoCAG3.subject.attributes.filter(({ name }) => name !== 'commonName'), // * Remove old one
+	{
+		name: 'commonName',
+		value: '*' // * This wouldn't work in normal CAs, but the Wii U accepts it!
+	}
+]);
 newCaCertificate.setExtensions([
 	...nintendoCAG3.extensions.filter(({ name }) => name !== 'authorityKeyIdentifier'), // * Remove old one
 	{
