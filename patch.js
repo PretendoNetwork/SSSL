@@ -19,10 +19,6 @@ async function showPrompt() {
 			private_key_path: {
 				description: colors.blue('Path to certificate private key (will generate if not set)')
 			},
-			common_name: {
-				description: colors.blue('CN (default *)'),
-				default: '*'
-			},
 			output_folder_path: {
 				description: colors.blue('Output folder (default to this directory)'),
 				default: './'
@@ -97,13 +93,6 @@ function patchCA(options) {
 	patchedCA.validity.notAfter = nintendoCAG3.validity.notAfter; // TODO - Make this configurable?
 	patchedCA.setIssuer(nintendoCAG3.subject.attributes);
 	patchedCA.setSubject(nintendoCAG3.subject.attributes);
-	patchedCA.setSubject([
-		...nintendoCAG3.subject.attributes.filter(({ name }) => name !== 'commonName'), // * Remove old one
-		{
-			name: 'commonName',
-			value: options.common_name
-		}
-	]);
 	patchedCA.setExtensions([
 		...nintendoCAG3.extensions.filter(({ name }) => name !== 'authorityKeyIdentifier'), // * Remove old one
 		{
