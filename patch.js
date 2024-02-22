@@ -3,7 +3,7 @@ const crypto = require('node:crypto');
 const path = require('node:path');
 const { pki, md } = require('node-forge');
 const prompt = require('prompt');
-const colors = require("@colors/colors/safe");
+const colors = require('@colors/colors/safe');
 
 async function showPrompt() {
 	prompt.message = colors.magenta('SSSL');
