@@ -51,6 +51,7 @@ async function showPrompt() {
 	}
 
 	options.output_folder_path = path.resolve(options.output_folder_path);
+	options.private_key_path = path.resolve(options.private_key_path);
 
 	try {
 		patchCA(options);
