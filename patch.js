@@ -93,7 +93,7 @@ async function showPrompt() {
 	}
 
 	try {
-		patchCA(options);
+		forgeCertificateChain(options);
 
 		console.log(colors.green(`Wrote forged CA to ${options.output_folder_path}/forged-ca.pem`));
 		console.log(colors.green(`Wrote forged CA private key to ${options.output_folder_path}/forged-ca-private-key.pem`));
@@ -108,7 +108,7 @@ async function showPrompt() {
 	}
 }
 
-function patchCA(options) {
+function forgeCertificateChain(options) {
 	// * Parse Nintendo CA - G3
 	const nintendoCAG3PEM = fs.readFileSync(options.nintendo_ca_g3_path);
 	const nintendoCAG3 = pki.certificateFromPem(nintendoCAG3PEM);
