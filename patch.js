@@ -206,7 +206,7 @@ function forgeCertificateChain(options) {
 	siteCertificate.sign(caPrivateKey, md.sha1.create()); // TODO - Make this configurable? What other signatures work for the Wii U
 
 	// * Create the cert chain
-	const chain = `${pki.certificateToPem(siteCertificate)}\n${pki.certificateToPem(forgedCA)}\n`
+	const chain = `${pki.certificateToPem(siteCertificate)}\n${pki.certificateToPem(forgedCA)}\n`;
 
 	// * Save everything to disk
 	// TODO - Write public keys?
