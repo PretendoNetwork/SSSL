@@ -95,9 +95,12 @@ async function showPrompt() {
 	try {
 		patchCA(options);
 
-
-		console.log(colors.green(`Wrote patched CA to ${options.output_folder_path}/patched-ca.pem`));
-		console.log(colors.green(`Wrote private key to ${options.output_folder_path}/private-key.pem`));
+		console.log(colors.green(`Wrote forged CA to ${options.output_folder_path}/forged-ca.pem`));
+		console.log(colors.green(`Wrote forged CA private key to ${options.output_folder_path}/forged-ca-private-key.pem`));
+		console.log(colors.green(`Wrote SSL certificate to ${options.output_folder_path}/ssl-cert.pem`));
+		console.log(colors.green(`Wrote SSL certificate private key to ${options.output_folder_path}/ssl-cert-private-key.pem`));
+		console.log(colors.green(`Wrote CSR to ${options.output_folder_path}/csr.csr`));
+		console.log(colors.green(`Wrote certificate chain to ${options.output_folder_path}/cert-chain.pem`));
 	} catch (error) {
 		console.log(colors.bgRed(`Error patching CA: ${error}`));
 
