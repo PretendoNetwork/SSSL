@@ -27,7 +27,7 @@ The easiest way to exploit this bug is to use the Nintendo CA - G3 CA, and is wh
 This script takes in a PEM encoded copy of Nintendo CA - G3 and does the above patches and exports the patched CA and private key.
 
 - Install [NodeJS](https://nodejs.org/)
-- `git clone git clone https://github.com/PretendoNetwork/SSSL`
+- `git clone https://github.com/PretendoNetwork/SSSL`
 - `cd SSSL`
 - `npm i` to install the dependencies
 - `node patch` to run the patching wizard
