@@ -50,11 +50,11 @@ async function showPrompt() {
 	const options = await prompt.get({
 		properties: {
 			nintendo_ca_g3_path: {
-				description: colors.blue('Path to Nintendo CA - G3 (default to this directory)'),
+				description: colors.blue('Path to Nintendo CA - G3 certificate (default to this directory)'),
 				default: defaultOptions.nintendo_ca_g3_path
 			},
 			nintendo_ca_g3_format: {
-				description: colors.blue('Nintendo CA - G3 format (must be "der" or "pem")'),
+				description: colors.blue('Nintendo CA - G3 certificate format (must be "der" or "pem")'),
 				default: defaultOptions.nintendo_ca_g3_format
 			},
 			ca_private_key_path: {
