@@ -116,6 +116,12 @@ function validateOptions(options) {
 		return false;
 	}
 
+	if (options.nintendo_ca_g3_format !== 'der' && options.nintendo_ca_g3_format !== 'pem') {
+		console.log(colors.bgRed('Invalid Nintendo CA - G3 format: must be "der" or "pem"'));
+
+		return false;
+	}
+
 	if (options.ca_private_key_path && !fs.existsSync(options.ca_private_key_path)) {
 		console.log(colors.bgRed('Invalid CA private key path'));
 
@@ -149,12 +155,10 @@ function forgeCertificateChain(options) {
 	if (options.nintendo_ca_g3_format === 'pem') {
 		const nintendoCAG3PEM = fs.readFileSync(options.nintendo_ca_g3_path);
 		nintendoCAG3 = pki.certificateFromPem(nintendoCAG3PEM);
-	} else if (options.nintendo_ca_g3_format === 'der') {
+	} else {
 		const nintendoCAG3DER = fs.readFileSync(options.nintendo_ca_g3_path, 'binary');
 		const nintendoCAG3ASN1 = asn1.fromDer(nintendoCAG3DER);
 		nintendoCAG3 = pki.certificateFromAsn1(nintendoCAG3ASN1);
-	} else {
-		throw new Error('Invalid Nintendo CA - G3 format: must be "der" or "pem"');
 	}
 
 	let caPrivateKey;
