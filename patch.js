@@ -4,6 +4,41 @@ const path = require('node:path');
 const { pki, md } = require('node-forge');
 const prompt = require('prompt');
 const colors = require('@colors/colors/safe');
+const dotenv = require('dotenv');
+
+const defaultOptions = {
+	nintendo_ca_g3_path: './CACERT_NINTENDO_CA_G3.pem',
+	ca_private_key_path: undefined,
+	site_private_key_path: undefined,
+	csr_path: undefined,
+	common_name: '*',
+	output_folder_path: './'
+};
+
+async function main() {
+	dotenv.config();
+
+	if (process.argv.includes('-i') || process.argv.includes('--interactive')) {
+		showPrompt();
+
+		return;
+	}
+
+	const options = {
+		nintendo_ca_g3_path: process.env.NINTENDO_CA_G3_PATH || defaultOptions.nintendo_ca_g3_path,
+		ca_private_key_path: process.env.CA_PRIVATE_KEY_PATH || defaultOptions.ca_private_key_path,
+		site_private_key_path: process.env.SITE_PRIVATE_KEY_PATH || defaultOptions.site_private_key_path,
+		csr_path: process.env.CSR_PATH || defaultOptions.csr_path,
+		common_name: process.env.COMMON_NAME || defaultOptions.common_name,
+		output_folder_path: process.env.OUTPUT_FOLDER_PATH || defaultOptions.output_folder_path
+	};
+
+	if (validateOptions(options)) {
+		forgeCertificateChain(options);
+	} else {
+		throw new Error('Invalid options specified.');
+	}
+}
 
 async function showPrompt() {
 	prompt.message = colors.magenta('SSSL');
@@ -13,29 +48,46 @@ async function showPrompt() {
 	const options = await prompt.get({
 		properties: {
 			nintendo_ca_g3_path: {
-				description: colors.blue('Path to Nintendo CA - G3 (default to this directory)'),
-				default: './CACERT_NINTENDO_CA_G3.pem'
+				description: colors.blue('Path to Nintendo CA - G3 (default to this directory, "CACERT_NINTENDO_CA_G3.der")'),
+				default: defaultOptions.nintendo_ca_g3_path
 			},
 			ca_private_key_path: {
-				description: colors.blue('Path to private key for forged CA (will generate if not set)')
+				description: colors.blue('Path to private key for forged CA (will generate if not set)'),
+				default: defaultOptions.ca_private_key_path
 			},
 			site_private_key_path: {
-				description: colors.blue('Path to private key for site certificate (will generate if not set)')
+				description: colors.blue('Path to private key for site certificate (will generate if not set)'),
+				default: defaultOptions.site_private_key_path
 			},
 			csr_path: {
-				description: colors.blue('Path to CSR (will generate if not set)')
+				description: colors.blue('Path to CSR (will generate if not set)'),
+				default: defaultOptions.csr_path
 			},
 			common_name: {
 				description: colors.blue('CN for site certificate (default to "*")'),
-				default: '*'
+				default: defaultOptions.common_name
 			},
 			output_folder_path: {
 				description: colors.blue('Output folder (default to this directory)'),
-				default: './'
+				default: defaultOptions.output_folder_path
 			}
 		}
 	});
 
+	if (validateOptions(options)) {
+		try {
+			forgeCertificateChain(options);
+		} catch (error) {
+			console.log(colors.bgRed(`Error patching CA: ${error}`));
+
+			showPrompt();
+		}
+	} else {
+		showPrompt();
+	}
+}
+
+function validateOptions(options) {
 	options.nintendo_ca_g3_path = path.resolve(options.nintendo_ca_g3_path);
 
 	if (options.ca_private_key_path) {
@@ -55,57 +107,34 @@ async function showPrompt() {
 	if (!fs.existsSync(options.nintendo_ca_g3_path)) {
 		console.log(colors.bgRed('Invalid Nintendo CA - G3 path'));
 
-		showPrompt();
-
-		return;
+		return false;
 	}
 
 	if (options.ca_private_key_path && !fs.existsSync(options.ca_private_key_path)) {
 		console.log(colors.bgRed('Invalid CA private key path'));
 
-		showPrompt();
-
-		return;
+		return false;
 	}
 
 	if (options.site_private_key_path && !fs.existsSync(options.site_private_key_path)) {
 		console.log(colors.bgRed('Invalid site certificate private key path'));
 
-		showPrompt();
-
-		return;
+		return false;
 	}
 
 	if (options.csr_path && !fs.existsSync(options.csr_path)) {
 		console.log(colors.bgRed('Invalid CSR key path'));
 
-		showPrompt();
-
-		return;
+		return false;
 	}
 
 	if (!fs.existsSync(options.output_folder_path)) {
 		console.log(colors.bgRed('Invalid output folder path'));
 
-		showPrompt();
-
-		return;
+		return false;
 	}
 
-	try {
-		forgeCertificateChain(options);
-
-		console.log(colors.green(`Wrote forged CA to ${options.output_folder_path}/forged-ca.pem`));
-		console.log(colors.green(`Wrote forged CA private key to ${options.output_folder_path}/forged-ca-private-key.pem`));
-		console.log(colors.green(`Wrote SSL certificate to ${options.output_folder_path}/ssl-cert.pem`));
-		console.log(colors.green(`Wrote SSL certificate private key to ${options.output_folder_path}/ssl-cert-private-key.pem`));
-		console.log(colors.green(`Wrote CSR to ${options.output_folder_path}/csr.csr`));
-		console.log(colors.green(`Wrote certificate chain to ${options.output_folder_path}/cert-chain.pem`));
-	} catch (error) {
-		console.log(colors.bgRed(`Error patching CA: ${error}`));
-
-		showPrompt();
-	}
+	return true;
 }
 
 function forgeCertificateChain(options) {
@@ -145,7 +174,7 @@ function forgeCertificateChain(options) {
 			// * https://github.com/digitalbazaar/forge/blob/2bb97afb5058285ef09bcf1d04d6bd6b87cffd58/tests/unit/x509.js#L324-L329
 			// * https://github.com/digitalbazaar/forge/blob/2bb97afb5058285ef09bcf1d04d6bd6b87cffd58/lib/x509.js#L2204-L2233
 			name: 'authorityKeyIdentifier',
-			keyIdentifier:  crypto.randomBytes(16).toString('ascii'),
+			keyIdentifier: crypto.randomBytes(16).toString('ascii'),
 			authorityCertIssuer: nintendoCAG3.issuer,
 			serialNumber: nintendoCAG3.serialNumber
 		}
@@ -184,7 +213,8 @@ function forgeCertificateChain(options) {
 
 	// * Update the CN and resign
 	csr.publicKey = sitePublicKey;
-	csr.setSubject([ // TODO - Add the ability to set more of these?
+	csr.setSubject([
+		// TODO - Add the ability to set more of these?
 		{
 			name: 'commonName',
 			value: options.common_name
@@ -195,7 +225,7 @@ function forgeCertificateChain(options) {
 	// * Create the new site SSL certificate and sign it with the forged CA
 	const siteCertificate = pki.createCertificate();
 
-	siteCertificate.serialNumber = (new Date()).getTime().toString(); // TODO - Make this configurable?
+	siteCertificate.serialNumber = new Date().getTime().toString(); // TODO - Make this configurable?
 	siteCertificate.validity.notBefore = new Date(); // TODO - Make this configurable?
 	siteCertificate.validity.notAfter = new Date(); // TODO - Make this configurable?
 	siteCertificate.validity.notAfter.setDate(siteCertificate.validity.notBefore.getDate() + 3650); // TODO - Make this configurable?
@@ -211,11 +241,17 @@ function forgeCertificateChain(options) {
 	// * Save everything to disk
 	// TODO - Write public keys?
 	fs.writeFileSync(`${options.output_folder_path}/forged-ca.pem`, pki.certificateToPem(forgedCA), 'utf8');
+	console.log(colors.green(`Wrote forged CA to ${options.output_folder_path}/forged-ca.pem`));
 	fs.writeFileSync(`${options.output_folder_path}/forged-ca-private-key.pem`, pki.privateKeyToPem(caPrivateKey), 'utf8');
+	console.log(colors.green(`Wrote forged CA private key to ${options.output_folder_path}/forged-ca-private-key.pem`));
 	fs.writeFileSync(`${options.output_folder_path}/ssl-cert.pem`, pki.certificateToPem(siteCertificate), 'utf8');
+	console.log(colors.green(`Wrote SSL certificate to ${options.output_folder_path}/ssl-cert.pem`));
 	fs.writeFileSync(`${options.output_folder_path}/ssl-cert-private-key.pem`, pki.privateKeyToPem(sitePrivateKey), 'utf8');
+	console.log(colors.green(`Wrote SSL certificate private key to ${options.output_folder_path}/ssl-cert-private-key.pem`));
 	fs.writeFileSync(`${options.output_folder_path}/csr.csr`, pki.certificationRequestToPem(csr), 'utf8'); // TODO - Better name
+	console.log(colors.green(`Wrote CSR to ${options.output_folder_path}/csr.csr`));
 	fs.writeFileSync(`${options.output_folder_path}/cert-chain.pem`, chain, 'utf8');
+	console.log(colors.green(`Wrote certificate chain to ${options.output_folder_path}/cert-chain.pem`));
 }
 
-showPrompt();
+main();
