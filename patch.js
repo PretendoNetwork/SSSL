@@ -257,14 +257,19 @@ function forgeCertificateChain(options) {
 	// TODO - Write public keys?
 	fs.writeFileSync(`${options.output_folder_path}/forged-ca.pem`, pki.certificateToPem(forgedCA), 'utf8');
 	console.log(colors.green(`Wrote forged CA to ${options.output_folder_path}/forged-ca.pem`));
+
 	fs.writeFileSync(`${options.output_folder_path}/forged-ca-private-key.pem`, pki.privateKeyToPem(caPrivateKey), 'utf8');
 	console.log(colors.green(`Wrote forged CA private key to ${options.output_folder_path}/forged-ca-private-key.pem`));
+
 	fs.writeFileSync(`${options.output_folder_path}/ssl-cert.pem`, pki.certificateToPem(siteCertificate), 'utf8');
 	console.log(colors.green(`Wrote SSL certificate to ${options.output_folder_path}/ssl-cert.pem`));
+
 	fs.writeFileSync(`${options.output_folder_path}/ssl-cert-private-key.pem`, pki.privateKeyToPem(sitePrivateKey), 'utf8');
 	console.log(colors.green(`Wrote SSL certificate private key to ${options.output_folder_path}/ssl-cert-private-key.pem`));
+
 	fs.writeFileSync(`${options.output_folder_path}/csr.csr`, pki.certificationRequestToPem(csr), 'utf8'); // TODO - Better name
 	console.log(colors.green(`Wrote CSR to ${options.output_folder_path}/csr.csr`));
+
 	fs.writeFileSync(`${options.output_folder_path}/cert-chain.pem`, chain, 'utf8');
 	console.log(colors.green(`Wrote certificate chain to ${options.output_folder_path}/cert-chain.pem`));
 }
