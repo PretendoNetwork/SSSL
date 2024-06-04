@@ -1,13 +1,14 @@
 const fs = require('node:fs');
 const crypto = require('node:crypto');
 const path = require('node:path');
-const { pki, md } = require('node-forge');
+const { asn1, pki, md } = require('node-forge');
 const prompt = require('prompt');
 const colors = require('@colors/colors/safe');
 const dotenv = require('dotenv');
 
 const defaultOptions = {
-	nintendo_ca_g3_path: './CACERT_NINTENDO_CA_G3.pem',
+	nintendo_ca_g3_path: './CACERT_NINTENDO_CA_G3.der',
+	nintendo_ca_g3_format: 'der',
 	ca_private_key_path: undefined,
 	site_private_key_path: undefined,
 	csr_path: undefined,
@@ -26,6 +27,7 @@ async function main() {
 
 	const options = {
 		nintendo_ca_g3_path: process.env.NINTENDO_CA_G3_PATH || defaultOptions.nintendo_ca_g3_path,
+		nintendo_ca_g3_format: process.env.NINTENDO_CA_G3_FORMAT || defaultOptions.nintendo_ca_g3_format,
 		ca_private_key_path: process.env.CA_PRIVATE_KEY_PATH || defaultOptions.ca_private_key_path,
 		site_private_key_path: process.env.SITE_PRIVATE_KEY_PATH || defaultOptions.site_private_key_path,
 		csr_path: process.env.CSR_PATH || defaultOptions.csr_path,
@@ -48,8 +50,12 @@ async function showPrompt() {
 	const options = await prompt.get({
 		properties: {
 			nintendo_ca_g3_path: {
-				description: colors.blue('Path to Nintendo CA - G3 (default to this directory, "CACERT_NINTENDO_CA_G3.der")'),
+				description: colors.blue('Path to Nintendo CA - G3 (default to this directory)'),
 				default: defaultOptions.nintendo_ca_g3_path
+			},
+			nintendo_ca_g3_format: {
+				description: colors.blue('Nintendo CA - G3 format (must be "der" or "pem")'),
+				default: defaultOptions.nintendo_ca_g3_format
 			},
 			ca_private_key_path: {
 				description: colors.blue('Path to private key for forged CA (will generate if not set)'),
@@ -139,8 +145,17 @@ function validateOptions(options) {
 
 function forgeCertificateChain(options) {
 	// * Parse Nintendo CA - G3
-	const nintendoCAG3PEM = fs.readFileSync(options.nintendo_ca_g3_path);
-	const nintendoCAG3 = pki.certificateFromPem(nintendoCAG3PEM);
+	let nintendoCAG3;
+	if (options.nintendo_ca_g3_format === 'pem') {
+		const nintendoCAG3PEM = fs.readFileSync(options.nintendo_ca_g3_path);
+		nintendoCAG3 = pki.certificateFromPem(nintendoCAG3PEM);
+	} else if (options.nintendo_ca_g3_format === 'der') {
+		const nintendoCAG3DER = fs.readFileSync(options.nintendo_ca_g3_path, 'binary');
+		const nintendoCAG3ASN1 = asn1.fromDer(nintendoCAG3DER);
+		nintendoCAG3 = pki.certificateFromAsn1(nintendoCAG3ASN1);
+	} else {
+		throw new Error('Invalid Nintendo CA - G3 format: must be "der" or "pem"');
+	}
 
 	let caPrivateKey;
 	let caPublicKey;
