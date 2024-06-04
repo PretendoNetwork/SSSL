@@ -48,15 +48,15 @@ This script can also be run in a Docker container.
 
 This script can be configured using environment variables or a `.env` file. Alternatively, it can be run with the `-i` or `--interactive` flag to interactively prompt for all configuration values.
 
-| Environment Variable  | Description                                                         | Default                       |
-| --------------------- | ------------------------------------------------------------------- | ----------------------------- |
-| NINTENDO_CA_G3_PATH   | Path to Nintendo CA - G3 certificate (may be in DER or PEM format)  | `./CACERT_NINTENDO_CA_G3.der` |
-| NINTENDO_CA_G3_FORMAT | Nintendo CA - G3 certificate format (must be "der" or "pem")        | `der`                         |
-| CA_PRIVATE_KEY_PATH   | Path to private key for forged CA (will generate if not set)        | N/A                           |
-| SITE_PRIVATE_KEY_PATH | Path to private key for site certificate (will generate if not set) | N/A                           |
-| CSR_PATH              | Path to CSR (will generate if not set)                              | N/A                           |
-| COMMON_NAME           | CN for site certificate (see [the bugs](#the-bugs))                 | `*`                           |
-| OUTPUT_FOLDER_PATH    | Output folder                                                       | `./`                          |
+| Environment Variable       | Description                                                         | Default                       |
+| -------------------------- | ------------------------------------------------------------------- | ----------------------------- |
+| SSSL_NINTENDO_CA_G3_PATH   | Path to Nintendo CA - G3 certificate (may be in DER or PEM format)  | `./CACERT_NINTENDO_CA_G3.der` |
+| SSSL_NINTENDO_CA_G3_FORMAT | Nintendo CA - G3 certificate format (must be "der" or "pem")        | `der`                         |
+| SSSL_CA_PRIVATE_KEY_PATH   | Path to private key for forged CA (will generate if not set)        | N/A                           |
+| SSSL_SITE_PRIVATE_KEY_PATH | Path to private key for site certificate (will generate if not set) | N/A                           |
+| SSSL_CSR_PATH              | Path to CSR (will generate if not set)                              | N/A                           |
+| SSSL_COMMON_NAME           | CN for site certificate (see [the bugs](#the-bugs))                 | `*`                           |
+| SSSL_OUTPUT_FOLDER_PATH    | Output folder                                                       | `./`                          |
 
 ## Credits
 

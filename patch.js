@@ -26,13 +26,13 @@ async function main() {
 	}
 
 	const options = {
-		nintendo_ca_g3_path: process.env.NINTENDO_CA_G3_PATH || defaultOptions.nintendo_ca_g3_path,
-		nintendo_ca_g3_format: process.env.NINTENDO_CA_G3_FORMAT || defaultOptions.nintendo_ca_g3_format,
-		ca_private_key_path: process.env.CA_PRIVATE_KEY_PATH || defaultOptions.ca_private_key_path,
-		site_private_key_path: process.env.SITE_PRIVATE_KEY_PATH || defaultOptions.site_private_key_path,
-		csr_path: process.env.CSR_PATH || defaultOptions.csr_path,
-		common_name: process.env.COMMON_NAME || defaultOptions.common_name,
-		output_folder_path: process.env.OUTPUT_FOLDER_PATH || defaultOptions.output_folder_path
+		nintendo_ca_g3_path: process.env.SSSL_NINTENDO_CA_G3_PATH || defaultOptions.nintendo_ca_g3_path,
+		nintendo_ca_g3_format: process.env.SSSL_NINTENDO_CA_G3_FORMAT || defaultOptions.nintendo_ca_g3_format,
+		ca_private_key_path: process.env.SSSL_CA_PRIVATE_KEY_PATH || defaultOptions.ca_private_key_path,
+		site_private_key_path: process.env.SSSL_SITE_PRIVATE_KEY_PATH || defaultOptions.site_private_key_path,
+		csr_path: process.env.SSSL_CSR_PATH || defaultOptions.csr_path,
+		common_name: process.env.SSSL_COMMON_NAME || defaultOptions.common_name,
+		output_folder_path: process.env.SSSL_OUTPUT_FOLDER_PATH || defaultOptions.output_folder_path
 	};
 
 	if (validateOptions(options)) {
