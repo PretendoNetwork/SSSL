@@ -46,17 +46,18 @@ This script can also be run in a Docker container.
 
 ## Configuration
 
-This script can be configured using environment variables or a `.env` file. Alternatively, it can be run with the `-i` or `--interactive` flag to interactively prompt for all configuration values.
+This script can be configured using environment variables, a `.env` file, or individual command-line arguments. Alternatively, it can be run with the `-i` or `--interactive` flag to interactively prompt for all configuration values. Command-line arguments always override environment variables.
 
-| Environment Variable       | Description                                                         | Default                       |
-| -------------------------- | ------------------------------------------------------------------- | ----------------------------- |
-| SSSL_NINTENDO_CA_G3_PATH   | Path to Nintendo CA - G3 certificate (may be in DER or PEM format)  | `./CACERT_NINTENDO_CA_G3.der` |
-| SSSL_NINTENDO_CA_G3_FORMAT | Nintendo CA - G3 certificate format (must be "der" or "pem")        | `der`                         |
-| SSSL_CA_PRIVATE_KEY_PATH   | Path to private key for forged CA (will generate if not set)        | N/A                           |
-| SSSL_SITE_PRIVATE_KEY_PATH | Path to private key for site certificate (will generate if not set) | N/A                           |
-| SSSL_CSR_PATH              | Path to CSR (will generate if not set)                              | N/A                           |
-| SSSL_COMMON_NAME           | CN for site certificate (see [the bugs](#the-bugs))                 | `*`                           |
-| SSSL_OUTPUT_FOLDER_PATH    | Output folder                                                       | `./`                          |
+| Environment Variable       | Command-line Argument                   | Description                                                         | Default                       |
+| -------------------------- | --------------------------------------- | ------------------------------------------------------------------- | ----------------------------- |
+| N/A                        | `-i`, `--interactive`                   | Interactively prompt for all configuration values                   | N/A                           |
+| SSSL_NINTENDO_CA_G3_PATH   | `-g`, `--nintendo_g3_path <value>`      | Path to Nintendo CA - G3 certificate (may be in DER or PEM format)  | `./CACERT_NINTENDO_CA_G3.der` |
+| SSSL_NINTENDO_CA_G3_FORMAT | `-f`, `--nintendo_g3_format <value>`    | Nintendo CA - G3 certificate format (must be "der" or "pem")        | `der`                         |
+| SSSL_CA_PRIVATE_KEY_PATH   | `-c`, `--ca_private_key_path <value>`   | Path to private key for forged CA (will generate if not set)        | N/A                           |
+| SSSL_SITE_PRIVATE_KEY_PATH | `-s`, `--site_private_key_path <value>` | Path to private key for site certificate (will generate if not set) | N/A                           |
+| SSSL_CSR_PATH              | `-r`, `--csr_path <value>`              | Path to CSR (will generate if not set)                              | N/A                           |
+| SSSL_COMMON_NAME           | `-n`, `--common_name <value>`           | CN for site certificate (see [the bugs](#the-bugs))                 | `*`                           |
+| SSSL_OUTPUT_FOLDER_PATH    | `-o`, `--out <value>`                   | Output folder                                                       | `./`                          |
 
 ## Credits
 

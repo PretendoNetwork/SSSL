@@ -5,35 +5,74 @@ const { asn1, pki, md } = require('node-forge');
 const prompt = require('prompt');
 const colors = require('@colors/colors/safe');
 const dotenv = require('dotenv');
+const { program } = require('commander');
 
-const defaultOptions = {
-	nintendo_ca_g3_path: './CACERT_NINTENDO_CA_G3.der',
-	nintendo_ca_g3_format: 'der',
-	ca_private_key_path: undefined,
-	site_private_key_path: undefined,
-	csr_path: undefined,
-	common_name: '*',
-	output_folder_path: './'
+const optionsConfig = {
+	nintendo_ca_g3_path: {
+		shortOption: 'g3',
+		default: './CACERT_NINTENDO_CA_G3.der',
+		description: 'Path to Nintendo CA - G3 certificate (may be in DER or PEM format, default to this directory)',
+		env: 'SSSL_NINTENDO_CA_G3_PATH'
+	},
+	nintendo_ca_g3_format: {
+		shortOption: 'f',
+		default: 'der',
+		description: 'Nintendo CA - G3 certificate format (must be "der" or "pem")',
+		env: 'SSSL_NINTENDO_CA_G3_FORMAT'
+	},
+	ca_private_key_path: {
+		shortOption: 'cap',
+		default: undefined,
+		description: 'Path to private key for forged CA (will generate if not set)',
+		env: 'SSSL_CA_PRIVATE_KEY_PATH'
+	},
+	site_private_key_path: {
+		shortOption: 'sp',
+		default: undefined,
+		description: 'Path to private key for site certificate (will generate if not set)',
+		env: 'SSSL_SITE_PRIVATE_KEY_PATH'
+	},
+	csr_path: {
+		shortOption: 'csrp',
+		default: undefined,
+		description: 'Path to CSR (will generate if not set)',
+		env: 'SSSL_CSR_PATH'
+	},
+	common_name: {
+		shortOption: 'cn',
+		default: '*',
+		description: 'CN for site certificate (default to "*")',
+		env: 'SSSL_COMMON_NAME'
+	},
+	output_folder_path: {
+		shortOption: 'o',
+		default: './',
+		description: 'Output folder (default to this directory)',
+		env: 'SSSL_OUTPUT_FOLDER_PATH'
+	}
 };
 
 async function main() {
 	dotenv.config();
 
-	if (process.argv.includes('-i') || process.argv.includes('--interactive')) {
+	program.option('-i, --interactive', 'Interactively prompt for all configuration values');
+	for (const [option, config] of Object.entries(optionsConfig)) {
+		program.option(`-${config.shortOption}, --${option} <value>`, config.description);
+	}
+
+	program.parse(process.argv);
+	const commandOptions = program.opts();
+
+	if (commandOptions.interactive) {
 		showPrompt();
 
 		return;
 	}
 
-	const options = {
-		nintendo_ca_g3_path: process.env.SSSL_NINTENDO_CA_G3_PATH || defaultOptions.nintendo_ca_g3_path,
-		nintendo_ca_g3_format: process.env.SSSL_NINTENDO_CA_G3_FORMAT || defaultOptions.nintendo_ca_g3_format,
-		ca_private_key_path: process.env.SSSL_CA_PRIVATE_KEY_PATH || defaultOptions.ca_private_key_path,
-		site_private_key_path: process.env.SSSL_SITE_PRIVATE_KEY_PATH || defaultOptions.site_private_key_path,
-		csr_path: process.env.SSSL_CSR_PATH || defaultOptions.csr_path,
-		common_name: process.env.SSSL_COMMON_NAME || defaultOptions.common_name,
-		output_folder_path: process.env.SSSL_OUTPUT_FOLDER_PATH || defaultOptions.output_folder_path
-	};
+	const options = {};
+	for (const [option, config] of Object.entries(optionsConfig)) {
+		options[option] = commandOptions[option] || process.env[config.env] || config.default;
+	}
 
 	if (validateOptions(options)) {
 		forgeCertificateChain(options);
@@ -47,38 +86,14 @@ async function showPrompt() {
 
 	prompt.start();
 
-	const options = await prompt.get({
-		properties: {
-			nintendo_ca_g3_path: {
-				description: colors.blue('Path to Nintendo CA - G3 certificate (default to this directory)'),
-				default: defaultOptions.nintendo_ca_g3_path
-			},
-			nintendo_ca_g3_format: {
-				description: colors.blue('Nintendo CA - G3 certificate format (must be "der" or "pem")'),
-				default: defaultOptions.nintendo_ca_g3_format
-			},
-			ca_private_key_path: {
-				description: colors.blue('Path to private key for forged CA (will generate if not set)'),
-				default: defaultOptions.ca_private_key_path
-			},
-			site_private_key_path: {
-				description: colors.blue('Path to private key for site certificate (will generate if not set)'),
-				default: defaultOptions.site_private_key_path
-			},
-			csr_path: {
-				description: colors.blue('Path to CSR (will generate if not set)'),
-				default: defaultOptions.csr_path
-			},
-			common_name: {
-				description: colors.blue('CN for site certificate (default to "*")'),
-				default: defaultOptions.common_name
-			},
-			output_folder_path: {
-				description: colors.blue('Output folder (default to this directory)'),
-				default: defaultOptions.output_folder_path
-			}
-		}
-	});
+	const properties = {};
+	for (const [option, config] of Object.entries(optionsConfig)) {
+		properties[option] = {
+			description: colors.blue(config.description),
+			default: config.default
+		};
+	}
+	const options = await prompt.get({ properties });
 
 	if (validateOptions(options)) {
 		try {
