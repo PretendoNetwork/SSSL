@@ -42,7 +42,7 @@ This script can also be run in a Docker container.
 1. `git clone https://github.com/PretendoNetwork/SSSL`
 2. `cd SSSL`
 3. `docker build . -t sssl`
-4. `docker run -it --rm -v .:/app sssl` or `docker run -it --rm -v .:/app sssl -i`
+4. `docker run -it --rm -v .:/app/certs sssl -g3 /app/certs/CACERT_NINTENDO_CA_G3.der -o /app/certs`
 
 ## Configuration
 
