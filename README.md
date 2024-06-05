@@ -51,13 +51,13 @@ This script can be configured using environment variables, a `.env` file, or ind
 | Environment Variable       | Command-line Argument                   | Description                                                         | Default                       |
 | -------------------------- | --------------------------------------- | ------------------------------------------------------------------- | ----------------------------- |
 | N/A                        | `-i`, `--interactive`                   | Interactively prompt for all configuration values                   | N/A                           |
-| SSSL_NINTENDO_CA_G3_PATH   | `-g`, `--nintendo_g3_path <value>`      | Path to Nintendo CA - G3 certificate (may be in DER or PEM format)  | `./CACERT_NINTENDO_CA_G3.der` |
-| SSSL_NINTENDO_CA_G3_FORMAT | `-f`, `--nintendo_g3_format <value>`    | Nintendo CA - G3 certificate format (must be "der" or "pem")        | `der`                         |
-| SSSL_CA_PRIVATE_KEY_PATH   | `-c`, `--ca_private_key_path <value>`   | Path to private key for forged CA (will generate if not set)        | N/A                           |
-| SSSL_SITE_PRIVATE_KEY_PATH | `-s`, `--site_private_key_path <value>` | Path to private key for site certificate (will generate if not set) | N/A                           |
-| SSSL_CSR_PATH              | `-r`, `--csr_path <value>`              | Path to CSR (will generate if not set)                              | N/A                           |
-| SSSL_COMMON_NAME           | `-n`, `--common_name <value>`           | CN for site certificate (see [the bugs](#the-bugs))                 | `*`                           |
-| SSSL_OUTPUT_FOLDER_PATH    | `-o`, `--out <value>`                   | Output folder                                                       | `./`                          |
+| SSSL_NINTENDO_CA_G3_PATH   | `-g`, `--nintendo-ca-g3-path <value>`   | Path to Nintendo CA - G3 certificate (may be in DER or PEM format)  | `./CACERT_NINTENDO_CA_G3.der` |
+| SSSL_NINTENDO_CA_G3_FORMAT | `-f`, `--nintendo-ca-g3-format <value>` | Nintendo CA - G3 certificate format (must be "der" or "pem")        | `der`                         |
+| SSSL_CA_PRIVATE_KEY_PATH   | `-c`, `--ca-private-key-path <value>`   | Path to private key for forged CA (will generate if not set)        | N/A                           |
+| SSSL_SITE_PRIVATE_KEY_PATH | `-s`, `--site-private-key-path <value>` | Path to private key for site certificate (will generate if not set) | N/A                           |
+| SSSL_CSR_PATH              | `-r`, `--csr-path <value>`              | Path to CSR (will generate if not set)                              | N/A                           |
+| SSSL_COMMON_NAME           | `-n`, `--common-name <value>`           | CN for site certificate (see [the bugs](#the-bugs))                 | `*`                           |
+| SSSL_OUTPUT_FOLDER_PATH    | `-o`, `--output-folder-path <value>`    | Output folder                                                       | `./`                          |
 
 ## Credits
 
