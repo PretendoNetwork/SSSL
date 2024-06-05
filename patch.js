@@ -5,7 +5,14 @@ const { asn1, pki, md } = require('node-forge');
 const prompt = require('prompt');
 const colors = require('@colors/colors/safe');
 const dotenv = require('dotenv');
-const { program } = require('commander');
+const { program, Option } = require('commander');
+
+class KebabCaseOption extends Option {
+	attributeName() {
+		// "this.name().replace(/^no-/, '')" is from commander source code
+		return this.name().replace(/^no-/, '').replace(/-/g, '_');
+	}
+}
 
 const optionsConfig = {
 	nintendo_ca_g3_path: {
@@ -57,7 +64,7 @@ async function main() {
 
 	program.option('-i, --interactive', 'Interactively prompt for all configuration values');
 	for (const [option, config] of Object.entries(optionsConfig)) {
-		program.option(`-${config.shortOption}, --${option} <value>`, config.description);
+		program.addOption(new KebabCaseOption(`-${config.shortOption}, --${option.replace(/_/g, '-')} <value>`, config.description));
 	}
 
 	program.parse(process.argv);
